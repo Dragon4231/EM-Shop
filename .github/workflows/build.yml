@@ -16,4 +16,4 @@ jobs:
       with:
         java-version: 17
     - name: Build with Gradle
-      run: ./gradlew bootRun --args='--spring.profiles.active=development
+      run: ./gradlew bootRun --args='--spring.profiles.active=development'
