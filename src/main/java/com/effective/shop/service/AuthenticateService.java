@@ -33,17 +33,10 @@ public class AuthenticateService {
 
     @Transactional
     public LoginResponse login(LoginRequest request) {
-        System.out.println(passwordEncoder.encode(request.getPassword()));
-        userRepository.findByUsername(request.getUsername()).ifPresent(user -> {
-            if(passwordEncoder.matches(request.getPassword(), user.getPassword())){
-                System.out.println("true");
-            }
-        });
-        return null;
-       /* Authentication authentication =
+        Authentication authentication =
                 authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(request.getUsername(), passwordEncoder.encode(request.getPassword())));
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String token = "";*/
+                        new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        return null;
     }
+
 }

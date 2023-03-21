@@ -6,6 +6,10 @@ spring:
     hikari:
       connection-timeout: 300
       maximum-pool-size: 5
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
+  flyway:
+    url: jdbc:postgresql://localhost:5432/db
+    user: postgres
+    password: password
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
