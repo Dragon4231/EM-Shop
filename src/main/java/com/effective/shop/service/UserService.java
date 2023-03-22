@@ -5,14 +5,18 @@ import com.effective.shop.models.request.RegistrationRequest;
 import com.effective.shop.models.response.AuthenticateResponse;
 import com.effective.shop.models.user.User;
 import com.effective.shop.models.user.UserRole;
+import com.effective.shop.security.models.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Objects;
 import java.util.Set;
+
+import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
 @Service
 public class UserService {
@@ -62,12 +66,21 @@ public class UserService {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(AuthenticateResponse.builder()
-                        .code(200)
+                        .code(201)
                         .result("User successfully created.")
                         .build());
     }
 
     public User findUserByUsername(String username){
         return userRepository.findByUsername(username).orElse(null);
+    }
+
+    public User getAuthenticated(){
+        UserDetails userDetails = (UserDetailsImpl) getContext().getAuthentication().getPrincipal();
+        return userRepository.findByUsername(userDetails.getUsername()).orElse(null);
+    }
+
+    public void saveUser(User user){
+        userRepository.save(user);
     }
 }

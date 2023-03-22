@@ -13,6 +13,9 @@ spring:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 jwt:
-  secret: '3b1Uth9C312$@saed99gGCBfFv0lZq6PpUMJw'
+  secret: '3b1Uth9DAld$&ASCby1ftfgGCBfFv0lZq6PpUMJs#w'
   expirationMs: 10800000

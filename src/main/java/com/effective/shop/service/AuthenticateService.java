@@ -8,8 +8,7 @@ import com.effective.shop.models.response.LoginResponse;
 import com.effective.shop.models.user.User;
 import com.effective.shop.models.user.UserToken;
 import com.effective.shop.security.models.UserDetailsImpl;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,12 +16,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Optional;
 
 import static io.jsonwebtoken.Jwts.builder;
@@ -31,6 +33,7 @@ import static io.jsonwebtoken.security.Keys.hmacShaKeyFor;
 import static java.time.LocalDateTime.now;
 import static java.time.ZoneOffset.UTC;
 import static java.util.Date.from;
+import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
 @Service
 @Slf4j
@@ -78,6 +81,29 @@ public class AuthenticateService {
                 .code(200)
                 .result("token: "+token)
                 .build();
+    }
+
+
+    @Transactional
+    public void authenticateWithJwt(HttpServletRequest request) {
+        String tokenFromHeader = request.getHeader("Authorization-Client");
+
+        String user = tokenParser.parseClaimsJws(tokenFromHeader).getBody().getSubject();
+
+        Optional<UserToken> userToken = userTokenRepository.findByUsernameAndToken(tokenFromHeader, user);
+
+        if(userToken.isPresent()){
+            User user1 = userService.findUserByUsername(user);
+            setAuthenticatedUserToSecurityContext(user1, request);
+        }
+    }
+
+    private void setAuthenticatedUserToSecurityContext(User user, HttpServletRequest request) {
+        UserDetails userDetails = new UserDetailsImpl(user);
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        getContext().setAuthentication(authentication);
     }
 
     @Transactional

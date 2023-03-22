@@ -16,4 +16,8 @@ public class UserRoleService {
     public UserRole findRoleClient(){
         return userRoleRepository.findByTitle(EUserRole.CLIENT).orElse(null);
     }
+
+    public UserRole findRoleAdmin(){
+        return userRoleRepository.findByTitle(EUserRole.ADMIN).orElse(null);
+    }
 }
