@@ -1,7 +1,9 @@
 package com.effective.shop.models.user;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -16,6 +18,8 @@ import static javax.persistence.InheritanceType.JOINED;
 @Table(name = "users")
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
     @Id

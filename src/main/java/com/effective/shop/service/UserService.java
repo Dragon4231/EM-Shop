@@ -66,4 +66,8 @@ public class UserService {
                         .result("User successfully created.")
                         .build());
     }
+
+    public User findUserByUsername(String username){
+        return userRepository.findByUsername(username).orElse(null);
+    }
 }
