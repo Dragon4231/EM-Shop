@@ -1,0 +1,1 @@
+* Запуск проекта: `./gradlew bootRun --args='--spring.profiles.active=development'`
